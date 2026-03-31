@@ -4,8 +4,13 @@
 
 {% block content %}
 <div class="dashboard-header">
-    <h1>Server Dashboard</h1>
-    <p class="subtitle">Monitoring {{ servers|length }} server(s)</p>
+    <div style="display: flex; justify-content: space-between; align-items: baseline;">
+        <div>
+            <h1>Server Dashboard</h1>
+            <p class="subtitle">Monitoring {{ servers|length }} server(s)</p>
+        </div>
+        <a href="/bulk-import" class="btn btn-sm" style="background: #8b5cf6;">Bulk Import</a>
+    </div>
 </div>
 
 <div class="stats-bar">
@@ -34,6 +39,7 @@
                 <th>Name</th>
                 <th>IP Address</th>
                 <th>Group</th>
+                <th>Tags</th>
                 <th>Latency</th>
                 <th>24h</th>
                 <th>7d</th>
@@ -50,6 +56,17 @@
                 <td><strong>{{ s.server_name }}</strong></td>
                 <td><code>{{ s.ip_address }}</code></td>
                 <td>{{ s.group_name or '-' }}</td>
+                <td>
+                    {% if s.tags %}
+                        <div class="tags">
+                            {% for tag in s.tags %}
+                            <span class="tag">{{ tag }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <span style="color: #64748b;">-</span>
+                    {% endif %}
+                </td>
                 <td>{{ '%.1f ms'|format(s.avg_latency_ms) if s.avg_latency_ms else '-' }}</td>
                 <td class="{{ 'avail-good' if s.availability_24h and s.availability_24h >= 99 else 'avail-warn' if s.availability_24h and s.availability_24h >= 95 else 'avail-bad' if s.availability_24h else '' }}">
                     {{ '%.2f%%'|format(s.availability_24h) if s.availability_24h is not none else '-' }}

@@ -1,0 +1,385 @@
+{% extends "base.html" %}
+
+{% block title %}Bulk Import - Uptime Monitor{% endblock %}
+
+{% block content %}
+<div class="detail-header">
+    <a href="/" class="back-link">&larr; Back to Dashboard</a>
+    <h1>Bulk Import Servers</h1>
+    <p class="subtitle">Import multiple servers from CSV file (50+)</p>
+</div>
+
+<div class="import-container">
+    <div class="import-section">
+        <h2>1. Download CSV Template</h2>
+        <p>Start with our template to ensure correct format:</p>
+        <div class="code-block">
+            <pre>name,ip_address,group_name,tags,ping_interval
+Web Server 1,192.168.1.1,KSO_FH,web;production,60
+Web Server 2,192.168.1.2,KSO_FH,web;production,60
+DNS Server,8.8.8.8,KSO_HW,dns;external,120
+Mail Server,mail.example.com,KSO_ZTE,mail;critical,30</pre>
+        </div>
+        <button class="btn" onclick="downloadTemplate()">Download Template</button>
+    </div>
+
+    <div class="import-section">
+        <h2>2. Upload CSV File</h2>
+        <form id="uploadForm" class="upload-form">
+            <div class="file-input-wrapper">
+                <input type="file" id="csvFile" accept=".csv" required>
+                <label for="csvFile" class="file-label">Choose CSV file or drag & drop</label>
+            </div>
+            <button type="submit" class="btn btn-primary">Upload & Import</button>
+        </form>
+    </div>
+
+    <div class="import-section" id="resultSection" style="display: none;">
+        <h2>3. Import Results</h2>
+        <div id="resultContent"></div>
+    </div>
+
+    <div class="info-section">
+        <h3>CSV Format Specification</h3>
+        <table class="spec-table">
+            <thead>
+                <tr>
+                    <th>Column</th>
+                    <th>Required</th>
+                    <th>Format</th>
+                    <th>Example</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><code>name</code></td>
+                    <td>✓ Yes</td>
+                    <td>String (max 255 chars)</td>
+                    <td>Web Server 1</td>
+                </tr>
+                <tr>
+                    <td><code>ip_address</code></td>
+                    <td>✓ Yes</td>
+                    <td>IPv4 or IPv6</td>
+                    <td>192.168.1.1 or 8.8.8.8</td>
+                </tr>
+                <tr>
+                    <td><code>group_name</code></td>
+                    <td>✗ No</td>
+                    <td>String (max 100 chars)</td>
+                    <td>KSO_FH, KSO_HW, KSO_ZTE</td>
+                </tr>
+                <tr>
+                    <td><code>tags</code></td>
+                    <td>✗ No</td>
+                    <td>Semicolon-separated (;)</td>
+                    <td>web;production or dns;external</td>
+                </tr>
+                <tr>
+                    <td><code>ping_interval</code></td>
+                    <td>✗ No</td>
+                    <td>Integer (seconds)</td>
+                    <td>60 (default), 30, 120</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h3>Notes</h3>
+        <ul>
+            <li>Max 5000 servers per import (split if needed)</li>
+            <li>Tags are case-sensitive</li>
+            <li>Use semicolons (;) to separate multiple tags: <code>web;production;critical</code></li>
+            <li>Ping interval default: 60 seconds</li>
+            <li>All imported servers are active by default</li>
+            <li>Duplicate IPs will be created (manually check before importing)</li>
+        </ul>
+    </div>
+</div>
+
+<script>
+async function downloadTemplate() {
+    const response = await fetch('/api/v1/servers/bulk/template');
+    const data = await response.json();
+
+    const element = document.createElement('a');
+    element.setAttribute('href', 'data:text/csv;charset=utf-8,' + encodeURIComponent(data.template));
+    element.setAttribute('download', 'uptime_monitor_template.csv');
+    element.style.display = 'none';
+    document.body.appendChild(element);
+    element.click();
+    document.body.removeChild(element);
+}
+
+document.getElementById('uploadForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const fileInput = document.getElementById('csvFile');
+    const file = fileInput.files[0];
+
+    if (!file) return;
+
+    const formData = new FormData();
+    formData.append('file', file);
+
+    try {
+        const response = await fetch('/api/v1/servers/bulk/import', {
+            method: 'POST',
+            body: formData
+        });
+
+        const result = await response.json();
+
+        if (!response.ok) {
+            showResult({
+                success: false,
+                message: result.detail || 'Upload failed'
+            });
+            return;
+        }
+
+        showResult(result);
+        if (result.created > 0) {
+            setTimeout(() => location.reload(), 2000);
+        }
+    } catch (error) {
+        showResult({
+            success: false,
+            message: error.message
+        });
+    }
+});
+
+function showResult(result) {
+    const resultSection = document.getElementById('resultSection');
+    const resultContent = document.getElementById('resultContent');
+
+    let html = `<div class="result-box ${result.success ? 'success' : 'error'}">`;
+
+    if (result.success) {
+        html += `
+            <div class="result-summary">
+                <h3>✓ Import Completed</h3>
+                <div class="result-stats">
+                    <div class="stat-item">
+                        <span class="stat-label">Created:</span>
+                        <span class="stat-value">${result.created}</span>
+                    </div>
+                    ${result.skipped > 0 ? `
+                    <div class="stat-item">
+                        <span class="stat-label">Skipped:</span>
+                        <span class="stat-value">${result.skipped}</span>
+                    </div>
+                    ` : ''}
+                </div>
+            </div>
+        `;
+    } else {
+        html += `<h3>✗ ${result.message}</h3>`;
+    }
+
+    if (result.errors && result.errors.length > 0) {
+        html += `<div class="errors-list"><h4>Errors:</h4><ul>`;
+        result.errors.forEach(err => {
+            html += `<li>${err}</li>`;
+        });
+        if (result.total_errors > result.errors.length) {
+            html += `<li>... and ${result.total_errors - result.errors.length} more errors</li>`;
+        }
+        html += `</ul></div>`;
+    }
+
+    html += `</div>`;
+    resultContent.innerHTML = html;
+    resultSection.style.display = 'block';
+    resultSection.scrollIntoView({ behavior: 'smooth' });
+}
+</script>
+{% endblock %}
+
+{% block scripts %}
+<style>
+.import-container {
+    max-width: 900px;
+}
+
+.import-section {
+    background: #1e293b;
+    border: 1px solid #334155;
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.import-section h2 {
+    color: #f1f5f9;
+    margin-bottom: 0.75rem;
+    font-size: 1.1rem;
+}
+
+.code-block {
+    background: #0f172a;
+    border-left: 4px solid #3b82f6;
+    padding: 1rem;
+    border-radius: 4px;
+    overflow-x: auto;
+    margin: 1rem 0;
+}
+
+.code-block pre {
+    color: #93c5fd;
+    font-size: 0.85rem;
+    margin: 0;
+    font-family: 'Monaco', 'Courier New', monospace;
+}
+
+.file-input-wrapper {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+    margin-bottom: 1rem;
+}
+
+.file-input-wrapper input {
+    display: none;
+}
+
+.file-label {
+    display: block;
+    padding: 2rem;
+    background: #334155;
+    border: 2px dashed #475569;
+    border-radius: 8px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.file-input-wrapper input:hover + .file-label {
+    border-color: #3b82f6;
+    background: rgba(59, 130, 246, 0.05);
+}
+
+.btn-primary {
+    background: #22c55e;
+}
+
+.btn-primary:hover {
+    background: #16a34a;
+}
+
+.info-section {
+    background: #1e293b;
+    border: 1px solid #334155;
+    border-radius: 8px;
+    padding: 1.5rem;
+}
+
+.info-section h3 {
+    color: #f1f5f9;
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+    font-size: 1rem;
+}
+
+.info-section ul {
+    color: #cbd5e1;
+    margin-left: 1.5rem;
+}
+
+.info-section li {
+    margin-bottom: 0.5rem;
+}
+
+.spec-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1rem 0;
+}
+
+.spec-table th {
+    background: #0f172a;
+    padding: 0.75rem;
+    text-align: left;
+    color: #94a3b8;
+    font-weight: 600;
+    border-bottom: 2px solid #334155;
+}
+
+.spec-table td {
+    padding: 0.75rem;
+    border-bottom: 1px solid #334155;
+    color: #cbd5e1;
+}
+
+.spec-table code {
+    background: #334155;
+    padding: 0.2rem 0.4rem;
+    border-radius: 3px;
+}
+
+.result-box {
+    padding: 1.5rem;
+    border-radius: 8px;
+    border-left: 4px solid;
+}
+
+.result-box.success {
+    background: rgba(34, 197, 94, 0.1);
+    border-left-color: #22c55e;
+}
+
+.result-box.error {
+    background: rgba(239, 68, 68, 0.1);
+    border-left-color: #ef4444;
+}
+
+.result-box h3 {
+    color: #f1f5f9;
+    margin-bottom: 1rem;
+}
+
+.result-stats {
+    display: flex;
+    gap: 2rem;
+    margin-top: 1rem;
+}
+
+.stat-item {
+    display: flex;
+    flex-direction: column;
+}
+
+.stat-label {
+    color: #94a3b8;
+    font-size: 0.85rem;
+}
+
+.stat-value {
+    color: #22c55e;
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.errors-list {
+    background: rgba(0, 0, 0, 0.3);
+    padding: 1rem;
+    border-radius: 4px;
+    margin-top: 1rem;
+}
+
+.errors-list h4 {
+    color: #ef4444;
+    margin-bottom: 0.5rem;
+}
+
+.errors-list ul {
+    color: #cbd5e1;
+    margin-left: 1.5rem;
+}
+
+.errors-list li {
+    margin-bottom: 0.3rem;
+    font-size: 0.9rem;
+}
+</style>
+{% endblock %}

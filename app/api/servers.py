@@ -1,6 +1,8 @@
+import csv
+import io
 import uuid
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, File, HTTPException, UploadFile
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -13,10 +15,13 @@ router = APIRouter(prefix="/servers", tags=["servers"])
 
 
 @router.get("", response_model=list[ServerWithStatus])
-async def list_servers(group: str | None = None, db: AsyncSession = Depends(get_db)):
+async def list_servers(group: str | None = None, tag: str | None = None, db: AsyncSession = Depends(get_db)):
     query = select(Server)
     if group:
         query = query.where(Server.group_name == group)
+    if tag:
+        from sqlalchemy import text
+        query = query.where(text(f"'{tag}' = ANY(tags)"))
     query = query.order_by(Server.name)
     result = await db.execute(query)
     servers = result.scalars().all()
@@ -111,3 +116,88 @@ async def delete_server(server_id: uuid.UUID, db: AsyncSession = Depends(get_db)
         raise HTTPException(status_code=404, detail="Server not found")
     await db.delete(server)
     await db.commit()
+
+
+@router.post("/bulk/import", response_model=dict, tags=["bulk"])
+async def bulk_import_csv(file: UploadFile = File(...), db: AsyncSession = Depends(get_db)):
+    """
+    Bulk import servers from CSV file.
+    CSV format: name,ip_address,group_name,tags,ping_interval
+
+    Example:
+        name,ip_address,group_name,tags,ping_interval
+        Web1,192.168.1.1,KSO_FH,web;production,60
+        DNS1,8.8.8.8,KSO_HW,dns;external,120
+    """
+    if not file.filename.endswith('.csv'):
+        raise HTTPException(status_code=400, detail="File must be CSV format")
+
+    try:
+        content = await file.read()
+        text = content.decode('utf-8')
+        reader = csv.DictReader(io.StringIO(text))
+
+        if not reader.fieldnames or not all(f in reader.fieldnames for f in ['name', 'ip_address']):
+            raise HTTPException(status_code=400, detail="CSV must have 'name' and 'ip_address' columns")
+
+        created = 0
+        skipped = 0
+        errors = []
+
+        for row_num, row in enumerate(reader, start=2):  # start=2 because header is row 1
+            try:
+                name = row.get('name', '').strip()
+                ip = row.get('ip_address', '').strip()
+                group = row.get('group_name', '').strip() or None
+                tags_str = row.get('tags', '').strip()
+                ping_interval = int(row.get('ping_interval', 60) or 60)
+
+                if not name or not ip:
+                    errors.append(f"Row {row_num}: name and ip_address required")
+                    skipped += 1
+                    continue
+
+                # Parse tags (comma or semicolon separated)
+                tags = [t.strip() for t in tags_str.replace(',', ';').split(';') if t.strip()] if tags_str else []
+
+                server = Server(
+                    name=name,
+                    ip_address=ip,
+                    group_name=group,
+                    tags=tags,
+                    ping_interval=ping_interval,
+                    is_active=True,
+                )
+                db.add(server)
+                created += 1
+
+            except ValueError as e:
+                errors.append(f"Row {row_num}: {str(e)}")
+                skipped += 1
+            except Exception as e:
+                errors.append(f"Row {row_num}: {str(e)}")
+                skipped += 1
+
+        await db.commit()
+
+        return {
+            "success": True,
+            "created": created,
+            "skipped": skipped,
+            "errors": errors[:10],  # Return first 10 errors
+            "total_errors": len(errors),
+        }
+
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"CSV parsing error: {str(e)}")
+
+
+@router.get("/bulk/template", tags=["bulk"])
+async def get_csv_template():
+    """Get CSV template for bulk import"""
+    template = """name,ip_address,group_name,tags,ping_interval
+Web Server 1,192.168.1.1,KSO_FH,web;production,60
+Web Server 2,192.168.1.2,KSO_FH,web;production,60
+DNS Server,8.8.8.8,KSO_HW,dns;external,120
+Mail Server,mail.example.com,KSO_ZTE,mail;critical,30"""
+    return {"template": template, "format": "CSV"}

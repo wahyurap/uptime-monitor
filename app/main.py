@@ -48,6 +48,14 @@ async def dashboard(request: Request):
     })
 
 
+@app.get("/bulk-import", response_class=HTMLResponse)
+async def bulk_import_page(request: Request):
+    return templates.TemplateResponse("bulk_import.html", {
+        "request": request,
+        "settings": settings,
+    })
+
+
 @app.get("/server/{server_id}", response_class=HTMLResponse)
 async def server_detail(request: Request, server_id: str):
     import uuid

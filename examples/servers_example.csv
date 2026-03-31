@@ -1,0 +1,21 @@
+name,ip_address,group_name,tags,ping_interval
+Web Server 1,192.168.1.1,KSO_FH,web;production;critical,30
+Web Server 2,192.168.1.2,KSO_FH,web;production;critical,30
+Web Server 3,192.168.1.3,KSO_FH,web;production;critical,30
+Database Primary,192.168.2.1,KSO_FH,database;production;critical,60
+Database Replica,192.168.2.2,KSO_FH,database;production,120
+Cache Redis 1,192.168.3.1,KSO_FH,cache;production,60
+Cache Redis 2,192.168.3.2,KSO_FH,cache;production,60
+API Server 1,10.0.1.1,KSO_HW,api;production;critical,30
+API Server 2,10.0.1.2,KSO_HW,api;production;critical,30
+DNS Primary,8.8.8.8,KSO_HW,dns;external,60
+DNS Secondary,1.1.1.1,KSO_HW,dns;external,60
+Staging Web,10.0.2.1,KSO_HW,web;staging,120
+Staging DB,10.0.2.2,KSO_HW,database;staging,120
+Backup Server,10.0.3.1,KSO_ZTE,backup;offline,300
+Monitoring Host,10.0.4.1,KSO_ZTE,monitoring,120
+Mail Server,mail.example.com,KSO_FH,mail;production,60
+Load Balancer,lb.example.com,KSO_FH,infrastructure;production;critical,30
+CDN Edge 1,cdn1.example.com,KSO_HW,cdn;external,60
+CDN Edge 2,cdn2.example.com,KSO_HW,cdn;external,60
+Dev Machine,dev.local,KSO_FH,dev;development,300

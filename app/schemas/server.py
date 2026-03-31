@@ -8,6 +8,7 @@ class ServerCreate(BaseModel):
     name: str
     ip_address: str
     group_name: str | None = None
+    tags: list[str] = []
     ping_interval: int = 60
     is_active: bool = True
 
@@ -16,6 +17,7 @@ class ServerUpdate(BaseModel):
     name: str | None = None
     ip_address: str | None = None
     group_name: str | None = None
+    tags: list[str] | None = None
     ping_interval: int | None = None
     is_active: bool | None = None
 
@@ -25,6 +27,7 @@ class ServerResponse(BaseModel):
     name: str
     ip_address: str
     group_name: str | None
+    tags: list[str]
     ping_interval: int
     is_active: bool
     created_at: datetime
