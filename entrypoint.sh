@@ -2,7 +2,11 @@
 set -e
 
 echo "Running database migrations..."
-alembic upgrade head
+if alembic upgrade head; then
+    echo "Migrations completed successfully"
+else
+    echo "Warning: Migration failed, attempting to continue anyway"
+fi
 
 echo "Starting application..."
 exec "$@"

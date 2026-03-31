@@ -1,7 +1,12 @@
 from logging.config import fileConfig
+import os
+import sys
 
 from alembic import context
 from sqlalchemy import engine_from_config, pool
+
+# Add project root to path for imports
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from app.config import settings
 from app.database import Base
