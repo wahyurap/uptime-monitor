@@ -99,7 +99,7 @@ async def ping_host_with_retry(host: str, timeout: float = 2.0, retries: int = 3
         if is_up:
             return True, latency
         if attempt < retries - 1:
-            await asyncio.sleep(1.0)  # Increased from 0.5 to 1.0 for slow networks
+            await asyncio.sleep(0.3)  # Quick retry delay for performance
     return False, None
 
 
