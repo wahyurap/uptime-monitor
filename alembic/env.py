@@ -8,10 +8,14 @@ from sqlalchemy import engine_from_config, pool
 # Add project root to path for imports
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from app.config import settings
-from app.database import Base
-from app.models.server import Server  # noqa: F401
-from app.models.ping_result import PingResult, DailyAvailability  # noqa: F401
+try:
+    from app.config import settings
+    from app.database import Base
+    from app.models.server import Server  # noqa: F401
+    from app.models.ping_result import PingResult, DailyAvailability  # noqa: F401
+except ImportError as e:
+    print(f"Warning: Could not import app modules: {e}")
+    print("Make sure psycopg2-binary is installed and database is accessible")
 
 config = context.config
 config.set_main_option("sqlalchemy.url", settings.database_url_sync)
