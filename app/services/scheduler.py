@@ -67,11 +67,13 @@ async def cleanup_old_pings():
 def start_scheduler():
     """Start the background scheduler."""
     # Ping all servers every minute (default interval)
+    # max_instances=1 prevents overlapping jobs (important for 90+ servers)
     scheduler.add_job(
         ping_all_servers,
         IntervalTrigger(seconds=settings.default_ping_interval),
         id="ping_all",
         replace_existing=True,
+        max_instances=1,  # Prevent overlapping executions
     )
 
     # Daily aggregation at 00:05 UTC
