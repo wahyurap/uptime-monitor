@@ -1,0 +1,257 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: #0f172a;
+    color: #e2e8f0;
+    line-height: 1.6;
+}
+
+.navbar {
+    background: #1e293b;
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #334155;
+}
+
+.nav-brand {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #3b82f6;
+    text-decoration: none;
+}
+
+.nav-links a {
+    color: #94a3b8;
+    text-decoration: none;
+    margin-left: 1.5rem;
+    font-size: 0.9rem;
+}
+
+.nav-links a:hover {
+    color: #e2e8f0;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.dashboard-header, .detail-header {
+    margin-bottom: 2rem;
+}
+
+.dashboard-header h1, .detail-header h1 {
+    font-size: 1.75rem;
+    color: #f1f5f9;
+}
+
+.subtitle {
+    color: #94a3b8;
+    margin-top: 0.25rem;
+}
+
+.back-link {
+    color: #3b82f6;
+    text-decoration: none;
+    font-size: 0.9rem;
+    display: inline-block;
+    margin-bottom: 0.5rem;
+}
+
+.back-link:hover {
+    text-decoration: underline;
+}
+
+/* Stats Bar */
+.stats-bar {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+}
+
+.stat {
+    background: #1e293b;
+    border: 1px solid #334155;
+    border-radius: 8px;
+    padding: 1.25rem 1.5rem;
+    flex: 1;
+    min-width: 120px;
+    text-align: center;
+}
+
+.stat-number {
+    display: block;
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: #f1f5f9;
+}
+
+.stat-label {
+    display: block;
+    font-size: 0.8rem;
+    color: #64748b;
+    text-transform: uppercase;
+    margin-top: 0.25rem;
+}
+
+.stat-up .stat-number { color: #22c55e; }
+.stat-down .stat-number { color: #ef4444; }
+
+/* Table */
+.table-container {
+    overflow-x: auto;
+    border-radius: 8px;
+    border: 1px solid #334155;
+}
+
+.server-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #1e293b;
+}
+
+.server-table th {
+    text-align: left;
+    padding: 0.75rem 1rem;
+    background: #0f172a;
+    color: #94a3b8;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    font-weight: 600;
+    border-bottom: 1px solid #334155;
+}
+
+.server-table td {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid #1e293b;
+    font-size: 0.9rem;
+}
+
+.server-table tbody tr:hover {
+    background: #334155;
+}
+
+.row-down {
+    background: rgba(239, 68, 68, 0.05);
+}
+
+code {
+    background: #334155;
+    padding: 0.15rem 0.4rem;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    color: #93c5fd;
+}
+
+/* Badge */
+.badge {
+    display: inline-block;
+    padding: 0.2rem 0.6rem;
+    border-radius: 9999px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.badge-up {
+    background: rgba(34, 197, 94, 0.15);
+    color: #22c55e;
+}
+
+.badge-down {
+    background: rgba(239, 68, 68, 0.15);
+    color: #ef4444;
+}
+
+.badge-unknown {
+    background: rgba(148, 163, 184, 0.15);
+    color: #94a3b8;
+}
+
+/* Availability colors */
+.avail-good { color: #22c55e; }
+.avail-warn { color: #eab308; }
+.avail-bad { color: #ef4444; }
+
+/* Button */
+.btn {
+    display: inline-block;
+    padding: 0.35rem 0.75rem;
+    border-radius: 6px;
+    text-decoration: none;
+    font-size: 0.8rem;
+    font-weight: 500;
+    background: #3b82f6;
+    color: #fff;
+    transition: background 0.2s;
+}
+
+.btn:hover {
+    background: #2563eb;
+}
+
+.btn-sm {
+    padding: 0.25rem 0.6rem;
+    font-size: 0.75rem;
+}
+
+/* Chart section */
+.chart-section {
+    background: #1e293b;
+    border: 1px solid #334155;
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.chart-section h2 {
+    font-size: 1rem;
+    color: #f1f5f9;
+    margin-bottom: 1rem;
+}
+
+.incidents-section {
+    margin-top: 1.5rem;
+}
+
+.incidents-section h2 {
+    font-size: 1rem;
+    margin-bottom: 1rem;
+}
+
+/* Empty state */
+.empty-state {
+    text-align: center;
+    padding: 4rem 2rem;
+    background: #1e293b;
+    border: 1px dashed #334155;
+    border-radius: 8px;
+}
+
+.empty-state h2 {
+    color: #94a3b8;
+    margin-bottom: 0.5rem;
+}
+
+.empty-state p {
+    color: #64748b;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .container { padding: 1rem; }
+    .stats-bar { flex-direction: column; }
+    .stat { min-width: auto; }
+    .server-table { font-size: 0.8rem; }
+    .server-table th, .server-table td { padding: 0.5rem; }
+}

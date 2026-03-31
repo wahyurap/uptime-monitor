@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - Uptime Monitor{% endblock %}
+
+{% block content %}
+<div class="dashboard-header">
+    <h1>Server Dashboard</h1>
+    <p class="subtitle">Monitoring {{ servers|length }} server(s)</p>
+</div>
+
+<div class="stats-bar">
+    {% set up_count = servers|selectattr("current_status", "equalto", "up")|list|length %}
+    {% set down_count = servers|selectattr("current_status", "equalto", "down")|list|length %}
+    <div class="stat stat-up">
+        <span class="stat-number">{{ up_count }}</span>
+        <span class="stat-label">UP</span>
+    </div>
+    <div class="stat stat-down">
+        <span class="stat-number">{{ down_count }}</span>
+        <span class="stat-label">DOWN</span>
+    </div>
+    <div class="stat stat-total">
+        <span class="stat-number">{{ servers|length }}</span>
+        <span class="stat-label">TOTAL</span>
+    </div>
+</div>
+
+{% if servers %}
+<div class="table-container">
+    <table class="server-table">
+        <thead>
+            <tr>
+                <th>Status</th>
+                <th>Name</th>
+                <th>IP Address</th>
+                <th>Group</th>
+                <th>Latency</th>
+                <th>24h</th>
+                <th>7d</th>
+                <th>30d</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for s in servers %}
+            <tr class="server-row {{ 'row-down' if s.current_status == 'down' else '' }}">
+                <td>
+                    {% include "components/status_badge.html" %}
+                </td>
+                <td><strong>{{ s.server_name }}</strong></td>
+                <td><code>{{ s.ip_address }}</code></td>
+                <td>{{ s.group_name or '-' }}</td>
+                <td>{{ '%.1f ms'|format(s.avg_latency_ms) if s.avg_latency_ms else '-' }}</td>
+                <td class="{{ 'avail-good' if s.availability_24h and s.availability_24h >= 99 else 'avail-warn' if s.availability_24h and s.availability_24h >= 95 else 'avail-bad' if s.availability_24h else '' }}">
+                    {{ '%.2f%%'|format(s.availability_24h) if s.availability_24h is not none else '-' }}
+                </td>
+                <td class="{{ 'avail-good' if s.availability_7d and s.availability_7d >= 99 else 'avail-warn' if s.availability_7d and s.availability_7d >= 95 else 'avail-bad' if s.availability_7d else '' }}">
+                    {{ '%.2f%%'|format(s.availability_7d) if s.availability_7d is not none else '-' }}
+                </td>
+                <td class="{{ 'avail-good' if s.availability_30d and s.availability_30d >= 99 else 'avail-warn' if s.availability_30d and s.availability_30d >= 95 else 'avail-bad' if s.availability_30d else '' }}">
+                    {{ '%.2f%%'|format(s.availability_30d) if s.availability_30d is not none else '-' }}
+                </td>
+                <td><a href="/server/{{ s.server_id }}" class="btn btn-sm">Detail</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<div class="empty-state">
+    <h2>No servers configured</h2>
+    <p>Add servers via the API: <code>POST /api/v1/servers</code></p>
+</div>
+{% endif %}
+
+<script>
+    // Auto-refresh every {{ settings.dashboard_refresh_seconds }} seconds
+    setTimeout(() => location.reload(), {{ settings.dashboard_refresh_seconds * 1000 }});
+</script>
+{% endblock %}

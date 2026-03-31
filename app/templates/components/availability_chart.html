@@ -1,0 +1,5 @@
+<div class="avail-mini">
+    <span class="avail-value {{ 'avail-good' if value and value >= 99 else 'avail-warn' if value and value >= 95 else 'avail-bad' }}">
+        {{ '%.2f%%'|format(value) if value is not none else '-' }}
+    </span>
+</div>

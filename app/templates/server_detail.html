@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+
+{% block title %}{{ server.name }} - Uptime Monitor{% endblock %}
+
+{% block content %}
+<div class="detail-header">
+    <a href="/" class="back-link">&larr; Back to Dashboard</a>
+    <h1>{{ server.name }}</h1>
+    <p class="subtitle"><code>{{ server.ip_address }}</code> &middot; {{ server.group_name or 'No group' }} &middot; Ping every {{ server.ping_interval }}s</p>
+</div>
+
+<div class="stats-bar">
+    <div class="stat">
+        <span class="stat-number">{{ '%.2f'|format(availability.availability_pct) }}%</span>
+        <span class="stat-label">Availability (30d)</span>
+    </div>
+    <div class="stat">
+        <span class="stat-number">{{ '%.1f'|format(availability.avg_latency_ms) if availability.avg_latency_ms else '-' }}</span>
+        <span class="stat-label">Avg Latency (ms)</span>
+    </div>
+    <div class="stat">
+        <span class="stat-number">{{ availability.total_pings }}</span>
+        <span class="stat-label">Total Pings</span>
+    </div>
+    <div class="stat">
+        <span class="stat-number">{{ availability.downtime_incidents|length }}</span>
+        <span class="stat-label">Incidents</span>
+    </div>
+</div>
+
+<div class="chart-section">
+    <h2>Latency (Last 24h)</h2>
+    <canvas id="latencyChart" height="80"></canvas>
+</div>
+
+{% if daily_avails %}
+<div class="chart-section">
+    <h2>Daily Availability (Last 30 Days)</h2>
+    <canvas id="availChart" height="60"></canvas>
+</div>
+{% endif %}
+
+{% if availability.downtime_incidents %}
+<div class="incidents-section">
+    <h2>Downtime Incidents</h2>
+    <table class="server-table">
+        <thead>
+            <tr><th>Start</th><th>End</th><th>Duration</th></tr>
+        </thead>
+        <tbody>
+            {% for inc in availability.downtime_incidents %}
+            <tr>
+                <td>{{ inc.start.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                <td>{{ inc.end.strftime('%Y-%m-%d %H:%M:%S') if inc.end else 'Ongoing' }}</td>
+                <td>{{ '%.1f min'|format(inc.duration_minutes) if inc.duration_minutes else 'Ongoing' }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block scripts %}
+<script>
+const latencyCtx = document.getElementById('latencyChart').getContext('2d');
+new Chart(latencyCtx, {
+    type: 'line',
+    data: {
+        labels: [{% for p in pings %}'{{ p.timestamp.strftime("%H:%M") }}'{% if not loop.last %},{% endif %}{% endfor %}],
+        datasets: [{
+            label: 'Latency (ms)',
+            data: [{% for p in pings %}{{ p.latency_ms if p.latency_ms else 'null' }}{% if not loop.last %},{% endif %}{% endfor %}],
+            borderColor: '#3b82f6',
+            backgroundColor: 'rgba(59, 130, 246, 0.1)',
+            fill: true,
+            tension: 0.3,
+            pointRadius: 0,
+        }]
+    },
+    options: {
+        responsive: true,
+        scales: {
+            y: { beginAtZero: true, title: { display: true, text: 'ms' } },
+            x: { ticks: { maxTicksAuto: true, maxRotation: 0 } }
+        },
+        plugins: { legend: { display: false } }
+    }
+});
+
+{% if daily_avails %}
+const availCtx = document.getElementById('availChart').getContext('2d');
+new Chart(availCtx, {
+    type: 'bar',
+    data: {
+        labels: [{% for d in daily_avails %}'{{ d.date }}'{% if not loop.last %},{% endif %}{% endfor %}],
+        datasets: [{
+            label: 'Availability %',
+            data: [{% for d in daily_avails %}{{ d.availability_pct }}{% if not loop.last %},{% endif %}{% endfor %}],
+            backgroundColor: [{% for d in daily_avails %}{% if d.availability_pct >= 99 %}'#22c55e'{% elif d.availability_pct >= 95 %}'#eab308'{% else %}'#ef4444'{% endif %}{% if not loop.last %},{% endif %}{% endfor %}],
+        }]
+    },
+    options: {
+        responsive: true,
+        scales: {
+            y: { min: 90, max: 100, title: { display: true, text: '%' } },
+            x: { ticks: { maxRotation: 45 } }
+        },
+        plugins: { legend: { display: false } }
+    }
+});
+{% endif %}
+</script>
+{% endblock %}
