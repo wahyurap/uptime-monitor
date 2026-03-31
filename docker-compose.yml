@@ -1,12 +1,11 @@
 services:
   db:
     image: postgres:16-alpine
+    container_name: uptime_db
     environment:
       POSTGRES_USER: uptime
-      POSTGRES_PASSWORD: uptime
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-uptime_secure_password}
       POSTGRES_DB: uptime_monitor
-    ports:
-      - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
     healthcheck:
@@ -14,19 +13,33 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
+    restart: unless-stopped
+    networks:
+      - uptime_network
 
   app:
     build: .
+    container_name: uptime_app
     ports:
       - "8000:8000"
     environment:
-      UPTIME_DATABASE_URL: postgresql+asyncpg://uptime:uptime@db:5432/uptime_monitor
-      UPTIME_DATABASE_URL_SYNC: postgresql://uptime:uptime@db:5432/uptime_monitor
+      UPTIME_DATABASE_URL: postgresql+asyncpg://uptime:${POSTGRES_PASSWORD:-uptime_secure_password}@db:5432/uptime_monitor
+      UPTIME_DATABASE_URL_SYNC: postgresql://uptime:${POSTGRES_PASSWORD:-uptime_secure_password}@db:5432/uptime_monitor
     depends_on:
       db:
         condition: service_healthy
     cap_add:
       - NET_RAW  # Required for ICMP ping
+    restart: unless-stopped
+    networks:
+      - uptime_network
+    volumes:
+      - ./logs:/app/logs
 
 volumes:
   pgdata:
+    driver: local
+
+networks:
+  uptime_network:
+    driver: bridge
