@@ -8,7 +8,7 @@ class Settings(BaseSettings):
 
     # Ping defaults
     default_ping_interval: int = 60  # seconds
-    ping_timeout: float = 2.0  # seconds
+    ping_timeout: float = 5.0  # seconds (increased for VPN/private network latency)
     ping_retries: int = 3
     ping_batch_size: int = 50
 
