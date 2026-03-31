@@ -1,0 +1,91 @@
+name,ip_address,group_name,tags,ping_interval
+JKT NMS BSS Paket 4-1,10.4.16.19,KSO_ZTE,ZTE;NMS,60
+JKT NMS BSS Paket 4-1,10.4.3.2,KSO_ZTE,ZTE;NMS,60
+JKT NMS BSS Paket 4-1,10.4.3.3,KSO_ZTE,ZTE;NMS,60
+JKT NMS VSAT Paket 4-1,10.4.2.2,KSO_ZTE,ZTE;NMS,60
+JKT NMS Power System Paket 4-1,10.4.16.66,KSO_ZTE,ZTE;NMS,60
+JKT NMC CCTV Paket 4-1,10.4.3.119,KSO_ZTE,ZTE;NMS,60
+JKT NMS BSS Paket 5-1,10.5.16.19,KSO_ZTE,ZTE;NMS,60
+JKT NMS BSS Paket 5-1,10.5.3.2,KSO_ZTE,ZTE;NMS,60
+JKT NMS BSS Paket 5-1,10.5.3.3,KSO_ZTE,ZTE;NMS,60
+JKT NMS VSAT Paket 5-1,10.5.2.2,KSO_ZTE,ZTE;NMS,60
+JKT NMS Power System Paket 5-1,10.5.16.66,KSO_ZTE,ZTE;NMS,60
+JKT NMC CCTV Paket 5-1,10.5.3.119,KSO_ZTE,ZTE;NMS,60
+Packet 01 NTT(BTS NMS) Master,100.6.0.59,KSO_FH,BTS;production,60
+Packet 01 NTT(BTS NMS) Slave,100.6.0.60,KSO_FH,BTS;production,60
+Packet 01 SUMATERA(BTS NMS) Master1,100.6.0.2,KSO_FH,BTS;production,60
+Packet 01 SUMATERA(BTS NMS) Slave,100.6.0.67,KSO_FH,BTS;production,60
+Packet 01 KALIMANTAN(BTS NMS) Master2,100.6.0.11,KSO_FH,BTS;production,60
+Packet 01 KALIMANTAN(BTS NMS) Master1,100.6.0.5,KSO_FH,BTS;production,60
+Packet 01 KALIMANTAN(BTS NMS) Slave,100.6.0.8,KSO_FH,BTS;production,60
+Packet 02 SULAWESI(BTS NMS) Slave,100.6.0.3,KSO_FH,BTS;production,60
+Packet 02 SULAWESI(BTS NMS) Master1,100.6.0.61,KSO_FH,BTS;production,60
+Packet 02 SULAWESI(BTS NMS) Master2,100.6.0.62,KSO_FH,BTS;production,60
+Packet 02 MALUKU(BTS NMS) Master1,100.6.0.6,KSO_FH,BTS;production,60
+Packet 02 MALUKU(BTS NMS) Slave,100.6.0.12,KSO_FH,BTS;production,60
+Packet 02 MALUKU   SYS(BTS NMS) Master2,100.6.0.9,KSO_FH,BTS;production,60
+Packet01 NTT(Ceragon MW NMS) Master,100.6.0.18,KSO_FH,BTS;production,60
+Packet01 SUMATERA(Ceragon MW NMS) Master,100.6.0.24,KSO_FH,BTS;production,60
+Packet 01 KALIMANTAN(Ceragon MW NMS) Master,100.6.0.17,KSO_FH,BTS;production,60
+Packet 02 SULAWESI(NEC MW NMS) Master ,100.6.0.20,KSO_FH,BTS;production,60
+Packet 02 MALUKU(Ceragon MW NMS) Master ,100.6.0.23,KSO_FH,BTS;production,60
+Packet 01 SYS(MW NMS) Slave ,100.6.0.21,KSO_FH,BTS;production,60
+Packet 02  SYS(MW NMS)  Slave,100.6.0.71,KSO_FH,BTS;production,60
+Packet 01 SYS(VSAT PRTG)  Master,100.6.0.35,KSO_FH,BTS;production,60
+Packet 02  SYS(VSAT PRTG)  Master,100.6.0.36,KSO_FH,BTS;production,60
+Packet 01 SYS(VSAT PRTG) Slave,100.6.0.74,KSO_FH,BTS;production,60
+Packet 02  SYS(VSAT PRTG) Slave,100.6.0.75,KSO_FH,BTS;production,60
+Packet 01 NTT  SYS(POWER PRTG)  Master,100.6.0.14,KSO_FH,BTS;production,60
+Packet 01 SUMATERA(POWER PRTG)  Master,100.6.0.39,KSO_FH,BTS;production,60
+Packet 01  KALIMANTAN(POWER PRTG) Master,100.6.0.38,KSO_FH,BTS;production,60
+Packet 01 SYS(POWER PRTG)  Slave,100.6.0.56,KSO_FH,BTS;production,60
+Packet 02 SYS(POWER PRTG)  Slave,100.6.0.40,KSO_FH,BTS;production,60
+Packet 02 SULAWESI SYS(POWER PRTG) Master,100.6.0.15,KSO_FH,BTS;production,60
+Packet 02 MALUKU(POWER PRTG)Master,100.6.0.55,KSO_FH,BTS;production,60
+Packet 01 NTT SYS(IPRAN NMS)  Master,100.6.0.33,KSO_FH,BTS;production,60
+Packet 01 SUMATERA(IPRAN NMS) Master,100.6.0.68,KSO_FH,BTS;production,60
+Packet 01 KALIMANTAN(IPRAN NMS) Master,100.6.0.32,KSO_FH,BTS;production,60
+Packet 02  SULAWESI(IPRAN NMS) Master,100.6.0.69,KSO_FH,BTS;production,60
+Packet 02 MALUKU(IPRAN NMS) Master,100.6.0.70,KSO_FH,BTS;production,60
+Packet 01 SYS(IPRAN NMS) Slave,100.6.0.72,KSO_FH,BTS;production,60
+Packet 02  SYS(IPRAN NMS) Slave,100.6.0.73,KSO_FH,BTS;production,60
+Packet 01 SYS(NOC OSS) Master (APP  Master),100.6.0.26,KSO_FH,BTS;production,60
+Packet 02 SYS(NOC OSS) Master  (APP Slave),100.6.0.27,KSO_FH,BTS;production,60
+Packet 01 SYS(NOC OSS) Slave  (DB Master),100.6.0.29,KSO_FH,BTS;production,60
+Packet 02 SYS(NOC OSS) Slave  (DB Slave),100.6.0.30,KSO_FH,BTS;production,60
+Packet 01  SYS(CCTV NMS) Master1,100.6.0.45,KSO_FH,BTS;production,60
+Packet 01 SYS(CCTV NMS) Master2,100.6.0.46,KSO_FH,BTS;production,60
+Packet 01 SYS(CCTV NMS) Master3,100.6.0.47,KSO_FH,BTS;production,60
+Packet 01 SYS(CCTV NMS) Slave,100.6.0.48,KSO_FH,BTS;production,60
+Packet 01 CCTV-NMS(DISK) Master,100.6.0.41,KSO_FH,BTS;production,60
+Packet 01 CCTV-NMS(DISK) Master,100.6.0.42,KSO_FH,BTS;production,60
+Packet 02 SYS(CCTV NMS) Master1,100.6.0.49,KSO_FH,BTS;production,60
+Packet 02 SYS(CCTV NMS) Master2,100.6.0.50,KSO_FH,BTS;production,60
+Packet 02 SYS(CCTV NMS) Master3,100.6.0.51,KSO_FH,BTS;production,60
+Packet 02 SYS(CCTV NMS) Slave,100.6.0.52,KSO_FH,BTS;production,60
+Packet 02 CCTV-NMS(DISK) Master,100.6.0.44,KSO_FH,BTS;production,60
+Packet 02 CCTV-NMS(DISK) Master,100.6.0.43,KSO_FH,BTS;production,60
+Packet 01 Switch (1/1/0/1),100.6.1.254,KSO_FH,BTS;production,60
+Packet 02 Switch (2/1/0/1),100.6.2.254,KSO_FH,BTS;production,60
+JKT NMS BSS Paket 3-1,10.70.63.39,KSO_HW,Huawei;NMS;hardware,60
+JKT NMS BSS Paket 3-1,10.70.63.55,KSO_HW,Huawei;NMS;hardware,60
+JKT NMS BSS Paket 3-2,10.70.63.7,KSO_HW,Huawei;NMS;hardware,60
+JKT NMS BSS Paket 3-2,10.70.63.23,KSO_HW,Huawei;NMS;hardware,60
+JKT NMS Microwave Paket 3-1,10.70.64.4,KSO_HW,Huawei;NMS;hardware,60
+JKT NMS Microwave Paket 3-1,10.70.64.5,KSO_HW,Huawei;NMS;hardware,60
+JKT NMS VSAT Paket 3-1,10.70.60.11,KSO_HW,Huawei;NMS;hardware,60
+JKT NMS VSAT Paket 3-1,10.70.60.12,KSO_HW,Huawei;NMS;hardware,60
+JKT NMS VSAT Paket 3-1,10.70.60.13,KSO_HW,Huawei;NMS;hardware,60
+JKT NMS Power System Paket 3-1,10.70.60.27,KSO_HW,Huawei;NMS;hardware,60
+JKT NMS Power System Paket 3-1,10.70.60.28,KSO_HW,Huawei;NMS;hardware,60
+JKT NMS Power System Paket 3-1,10.70.60.29,KSO_HW,Huawei;NMS;hardware,60
+JKT NMS RAN Router/IP Backbone Paket 3-1,10.70.67.141,KSO_HW,Huawei;NMS;hardware,60
+JKT NMS RAN Router/IP Backbone Paket 3-1,10.70.67.153,KSO_HW,Huawei;NMS;hardware,60
+JKT NMS RAN Router/IP Backbone Paket 3-2,10.70.66.141,KSO_HW,Huawei;NMS;hardware,60
+JKT NMS RAN Router/IP Backbone Paket 3-2,10.70.66.153,KSO_HW,Huawei;NMS;hardware,60
+JKT NMS NOC Paket 3-1,10.70.65.25,KSO_HW,Huawei;NMS;hardware,60
+JKT NMS NOC Paket 3-1,10.70.65.26,KSO_HW,Huawei;NMS;hardware,60
+JKT NMS NOC Paket 3-1,10.70.65.27,KSO_HW,Huawei;NMS;hardware,60
+JKT NMS NOC Paket 3-1,10.70.65.28,KSO_HW,Huawei;NMS;hardware,60
+JKT NMC CCTV Paket 3-1,10.70.63.83,KSO_HW,Huawei;NMS;hardware,60
+JKT NMC CCTV Paket 3-1,10.70.63.98,KSO_HW,Huawei;NMS;hardware,60
